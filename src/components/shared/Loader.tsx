@@ -1,5 +1,6 @@
 import React from 'react'
 
+//Loader Image when we press Sign up button
 const Loader = () => {
   return (
     <div className='flex-center w-full'>
@@ -7,7 +8,7 @@ const Loader = () => {
       src="/assets/icons/loader.svg"
       alt="loader"
       width={24}
-      height={24}
+      height={24   }
       />
     </div>
   )
