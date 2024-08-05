@@ -25,10 +25,11 @@ const SignupForm = () => {
 })
 
 // 2. Define a submit handler.
-function onSubmit(values: z.infer<typeof singupValidation>) {
-  // Do something with the form values.
-  // ✅ This will be type-safe and validated.
-  console.log(values)
+//This is async funtion and we have to specify it (because it take same time)
+//we will create our user using Appwrite
+async function onSubmit(values: z.infer<typeof singupValidation>) {
+  //New user will be added
+  const newuser = await crateUserAccount(values);
 }
 
   return (
