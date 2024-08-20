@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { Toaster } from "@/components/ui/toaster";
 import { Link } from 'react-router-dom';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage,} from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
@@ -7,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { singupValidation } from "@/lib/validation";
 import Loader from "@/components/shared/Loader";
+import { createUserAccount } from "@/lib/appwrite/api";
 
 
 const SignupForm = () => {
@@ -29,7 +31,12 @@ const SignupForm = () => {
 //we will create our user using Appwrite
 async function onSubmit(values: z.infer<typeof singupValidation>) {
   //New user will be added
-  const newuser = await crateUserAccount(values);
+  const newUser = await createUserAccount(values);
+
+  //User create hone ke baad kya hoga, we will define below
+  if(!newUser) {
+    return;
+  }
 }
 
   return (
