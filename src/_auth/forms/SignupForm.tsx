@@ -2,19 +2,25 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Toaster } from "@/components/ui/toaster";
 import { Link } from 'react-router-dom';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage,} from "@/components/ui/form"
+import { Form, FormControl,  FormField, FormItem, FormLabel, FormMessage,} from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { singupValidation } from "@/lib/validation";
 import Loader from "@/components/shared/Loader";
-import { createUserAccount } from "@/lib/appwrite/api";
+import { useCreateUserAccount, useSignInAccount } from "@/lib/react-query/queriesAndMutation";
+import { title } from "process";
 
 
 const SignupForm = () => {
-  //Used for making button to loading
-  const isLoading = false;
+  //declaring toast as a hook
+  const { toast } = useToast();
   
+  //here createuserAccount is rename of mutateAsync function save for loading
+  const { mutateAsync: createUserAccount, isLoading: isCreatingAccount } = useCreateUserAccount();
+
+  const { mutateAsync: signInAccount, isLoading: isSigningIn } = useSignInAccount();
+
  // 1. Define your form.
  const form = useForm<z.infer<typeof singupValidation>>({
   resolver: zodResolver(singupValidation),
@@ -35,7 +41,20 @@ async function onSubmit(values: z.infer<typeof singupValidation>) {
 
   //User create hone ke baad kya hoga, we will define below
   if(!newUser) {
-    return;
+    return  toast({
+      title: 'Sign up failed. Please try again.',
+    })
+  }
+
+  const session = await signInAccount( {
+    email: values.email,
+    password: values.password,
+  })  
+
+  if(!session) {
+    return toast({
+      title: 'Sign in failed. Please try again.'
+    })
   }
 }
 
@@ -103,7 +122,7 @@ async function onSubmit(values: z.infer<typeof singupValidation>) {
           )}
         />
         <Button type="submit" className="shad-button_primary">
-          {isLoading ? (
+          {isCreatingUser ? (
           <div className="flex-center gap-2">
            <Loader/> Loading...
           </div>
